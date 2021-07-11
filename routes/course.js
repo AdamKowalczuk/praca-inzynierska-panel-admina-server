@@ -1,13 +1,18 @@
 import express from "express";
 
-import { getCourses, createCourse } from "../controllers/courses.js";
+import {
+  getCourses,
+  getCourse,
+  //   getChapters,
+  createCourse,
+} from "../controllers/courses.js";
 
 const router = express.Router();
 
-// router.get("/", (req, res) => {
-//   res.send("THIS WORKS!");
-// });
 router.get("/", getCourses);
+router.get("/", getCourse);
+
+// router.get("/", getChapters);
 
 router.post("/", createCourse);
 // router.get("/:id", getCourse);
