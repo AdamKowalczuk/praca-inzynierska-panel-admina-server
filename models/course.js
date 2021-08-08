@@ -1,8 +1,10 @@
 import mongoose from "mongoose";
 
 const courseSchema = mongoose.Schema({
-  title: String,
+  name: String,
   description: String,
+  chapters: { type: [Object] },
+  isFinished: Boolean,
   createdAt: {
     type: Date,
     default: new Date(),
