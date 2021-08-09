@@ -5,7 +5,8 @@ import {
   getCourse,
   //   getChapters,
   updateCourse,
-  // updateChapter,
+  updateChapter,
+  updateLesson,
   createCourse,
   createChapter,
   createLesson,
@@ -22,10 +23,15 @@ router.get("/", getCourses);
 router.get("/", getCourse);
 router.post("/", createCourse);
 router.patch("/:id", updateCourse);
-router.delete("/:id", deleteCourse);
-router.post("/:id/chapters", createChapter);
+router.post("/:courseId/chapters/:chapterId", deleteChapter);
+router.patch("/:courseId/chapters/:chapterId", updateChapter);
+
 router.post("/:courseId/chapters/:chapterId/lessons", createLesson);
-router.patch("/:courseId/chapters/:chapterId", deleteChapter);
-router.patch("/:courseId/chapters/:chapterId/lessons/:lessonId", deleteLesson);
+router.post("/:courseId/chapters/:chapterId/lessons/:lessonId", deleteLesson);
+router.patch("/:courseId/chapters/:chapterId/lessons/:lessonId", updateLesson);
+
+router.post("/:id/chapters", createChapter);
+
+router.delete("/:id", deleteCourse);
 
 export default router;

@@ -30,10 +30,8 @@ export const getChapters = async (req, res) => {
 };
 
 export const updateCourse = async (req, res) => {
-  const { courseId } = req.params;
+  const courseId = req.params.id;
   const { name, description, isFinished, chapters } = req.body;
-  if (!mongoose.Types.ObjectId.isValid(id))
-    return res.status(404).send(`No course with id: ${courseId}`);
   const updatedCourse = {
     name,
     description,
@@ -45,21 +43,30 @@ export const updateCourse = async (req, res) => {
   res.json(updatedCourse);
 };
 export const updateChapter = async (req, res) => {
-  const { id } = req.params;
-  const { name, description, isFinished, lessons } = req.body;
-  if (!mongoose.Types.ObjectId.isValid(id))
-    return res.status(404).send(`No course with id: ${id}`);
-  const updatedChapter = { name, description, isFinished, lessons, _id: id };
-  await Course.findByIdAndUpdate(id, updatedChapter, { new: true });
+  const { courseId, chapterId } = req.params;
+  const { name, description, isFinished, lessons, _id, actualChapter } =
+    req.body;
+  const data = { name, description, isFinished, lessons, _id };
+  let course = await Course.findById(courseId);
+  course.chapters[actualChapter] = data;
+  // console.log(course);
+  const updatedCourse = await Course.findByIdAndUpdate(courseId, course, {
+    new: true,
+  });
   res.json(updatedCourse);
 };
 export const updateLesson = async (req, res) => {
-  const { id } = req.params;
-  const { name, description, isFinished, chapters } = req.body;
-  if (!mongoose.Types.ObjectId.isValid(id))
-    return res.status(404).send(`No course with id: ${id}`);
-  const updatedCourse = { name, description, isFinished, chapters, _id: id };
-  await Course.findByIdAndUpdate(id, updatedCourse, { new: true });
+  const { courseId, chapterId, lessonId } = req.params;
+  const { name, description, isFinished, _id, actualChapter, actualLesson } =
+    req.body;
+  console.log(req.params);
+  console.log(req.body);
+  const data = { name, description, isFinished, _id };
+  let course = await Course.findById(courseId);
+  course.chapters[actualChapter].lessons[actualLesson] = data;
+  const updatedCourse = await Course.findByIdAndUpdate(courseId, course, {
+    new: true,
+  });
   res.json(updatedCourse);
 };
 export const createCourse = async (req, res) => {
@@ -76,7 +83,7 @@ export const createChapter = async (req, res) => {
   const { id } = req.params;
   const { name, description, isFinished, lessons, _id } = req.body;
   const data = { name, description, isFinished, lessons, _id };
-  const course = await Course.findById(id);
+  let course = await Course.findById(id);
   course.chapters.push(data);
   const updatedCourse = await Course.findByIdAndUpdate(id, course, {
     new: true,
@@ -87,7 +94,7 @@ export const createLesson = async (req, res) => {
   const { courseId, chapterId } = req.params;
   const { name, description, isFinished, image, _id, actualChapter } = req.body;
   const data = { name, description, isFinished, image, _id };
-  const course = await Course.findById(courseId);
+  let course = await Course.findById(courseId);
   course.chapters[actualChapter].lessons.push(data);
   const updatedCourse = await Course.findByIdAndUpdate(courseId, course, {
     new: true,
@@ -107,10 +114,9 @@ export const deleteCourse = async (req, res) => {
 export const deleteChapter = async (req, res) => {
   const { courseId, chapterId } = req.params;
   const { actualChapter } = req.body;
-  if (!mongoose.Types.ObjectId.isValid(courseId))
-    return res.status(404).send(`No course with id: ${courseId}`);
-  const course = await Course.findById(courseId);
+  let course = await Course.findById(courseId);
   course.chapters.splice(actualChapter, 1);
+  console.log("Course after delete:", course);
   const updatedCourse = await Course.findByIdAndUpdate(courseId, course, {
     new: true,
   });
@@ -119,16 +125,13 @@ export const deleteChapter = async (req, res) => {
 export const deleteLesson = async (req, res) => {
   const { courseId, chapterId, lessonId } = req.params;
   const { actualLesson } = req.body;
-  if (!mongoose.Types.ObjectId.isValid(courseId))
-    return res.status(404).send(`No course with id: ${courseId}`);
-  const course = await Course.findById(courseId);
+
+  let course = await Course.findById(courseId);
   course.chapters.map((chapter) => {
-    console.log(chapter);
     if (chapter._id === chapterId) {
       chapter.lessons.splice(actualLesson, 1);
     }
   });
-
   const updatedCourse = await Course.findByIdAndUpdate(courseId, course, {
     new: true,
   });
