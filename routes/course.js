@@ -3,7 +3,6 @@ import express from "express";
 import {
   getCourses,
   getCourse,
-  //   getChapters,
   updateCourse,
   updateChapter,
   updateLesson,
@@ -13,8 +12,9 @@ import {
   deleteCourse,
   deleteChapter,
   deleteLesson,
-  // getChapters,
-  // updateCourse,
+  createQuiz,
+  updateQuiz,
+  deleteQuiz,
 } from "../controllers/courses.js";
 
 const router = express.Router();
@@ -29,6 +29,10 @@ router.patch("/:courseId/chapters/:chapterId", updateChapter);
 router.post("/:courseId/chapters/:chapterId/lessons", createLesson);
 router.post("/:courseId/chapters/:chapterId/lessons/:lessonId", deleteLesson);
 router.patch("/:courseId/chapters/:chapterId/lessons/:lessonId", updateLesson);
+
+router.post("/:courseId/chapters/:chapterId/quiz", createQuiz);
+router.post("/:courseId/chapters/:chapterId/quiz/:quizId", deleteQuiz);
+router.patch("/:courseId/chapters/:chapterId/quiz/:quizId", updateQuiz);
 
 router.post("/:id/chapters", createChapter);
 

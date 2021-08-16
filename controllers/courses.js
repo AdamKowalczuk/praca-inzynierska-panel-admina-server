@@ -49,7 +49,6 @@ export const updateChapter = async (req, res) => {
   const data = { name, description, isFinished, lessons, _id };
   let course = await Course.findById(courseId);
   course.chapters[actualChapter] = data;
-  // console.log(course);
   const updatedCourse = await Course.findByIdAndUpdate(courseId, course, {
     new: true,
   });
@@ -57,13 +56,38 @@ export const updateChapter = async (req, res) => {
 };
 export const updateLesson = async (req, res) => {
   const { courseId, chapterId, lessonId } = req.params;
-  const { name, description, isFinished, _id, actualChapter, actualLesson } =
-    req.body;
-  console.log(req.params);
-  console.log(req.body);
-  const data = { name, description, isFinished, _id };
+  const {
+    name,
+    description,
+    image,
+    isFinished,
+    _id,
+    actualChapter,
+    actualLesson,
+  } = req.body;
+  const data = { name, description, image, isFinished, _id };
   let course = await Course.findById(courseId);
   course.chapters[actualChapter].lessons[actualLesson] = data;
+  const updatedCourse = await Course.findByIdAndUpdate(courseId, course, {
+    new: true,
+  });
+  res.json(updatedCourse);
+};
+export const updateQuiz = async (req, res) => {
+  console.log("Update quiz");
+  const { courseId, chapterId, quizId } = req.params;
+  const {
+    question,
+    answers,
+    correctAnswer,
+    isFinished,
+    _id,
+    actualChapter,
+    actualQuiz,
+  } = req.body;
+  const data = { question, answers, correctAnswer, isFinished, _id };
+  let course = await Course.findById(courseId);
+  course.chapters[actualChapter].quiz[actualQuiz] = data;
   const updatedCourse = await Course.findByIdAndUpdate(courseId, course, {
     new: true,
   });
@@ -101,6 +125,20 @@ export const createLesson = async (req, res) => {
   });
   res.json(updatedCourse);
 };
+export const createQuiz = async (req, res) => {
+  console.log("Create Quiz");
+  const { courseId, chapterId } = req.params;
+  const { question, answers, correctAnswer, isFinished, _id, actualChapter } =
+    req.body;
+
+  const data = { question, answers, correctAnswer, isFinished, _id };
+  let course = await Course.findById(courseId);
+  course.chapters[actualChapter].quiz.push(data);
+  const updatedCourse = await Course.findByIdAndUpdate(courseId, course, {
+    new: true,
+  });
+  res.json(updatedCourse);
+};
 
 export const deleteCourse = async (req, res) => {
   const { id } = req.params;
@@ -116,7 +154,6 @@ export const deleteChapter = async (req, res) => {
   const { actualChapter } = req.body;
   let course = await Course.findById(courseId);
   course.chapters.splice(actualChapter, 1);
-  console.log("Course after delete:", course);
   const updatedCourse = await Course.findByIdAndUpdate(courseId, course, {
     new: true,
   });
@@ -130,6 +167,22 @@ export const deleteLesson = async (req, res) => {
   course.chapters.map((chapter) => {
     if (chapter._id === chapterId) {
       chapter.lessons.splice(actualLesson, 1);
+    }
+  });
+  const updatedCourse = await Course.findByIdAndUpdate(courseId, course, {
+    new: true,
+  });
+  res.json(updatedCourse);
+};
+export const deleteQuiz = async (req, res) => {
+  console.log("Delete Quiz");
+  const { courseId, chapterId, quizId } = req.params;
+  const { actualQuiz } = req.body;
+
+  let course = await Course.findById(courseId);
+  course.chapters.map((chapter) => {
+    if (chapter._id === chapterId) {
+      chapter.quiz.splice(actualQuiz, 1);
     }
   });
   const updatedCourse = await Course.findByIdAndUpdate(courseId, course, {
