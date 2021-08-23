@@ -9,6 +9,8 @@ const courseSchema = mongoose.Schema({
     type: Date,
     default: new Date(),
   },
+  icon: String,
+  color: String,
 });
 
 var Course = mongoose.model("Course", courseSchema);

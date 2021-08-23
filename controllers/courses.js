@@ -31,22 +31,42 @@ export const getChapters = async (req, res) => {
 
 export const updateCourse = async (req, res) => {
   const courseId = req.params.id;
-  const { name, description, isFinished, chapters } = req.body;
+  const { name, description, isFinished, chapters, color, icon } = req.body;
   const updatedCourse = {
     name,
     description,
     isFinished,
     chapters,
     _id: courseId,
+    color,
+    icon,
   };
   await Course.findByIdAndUpdate(courseId, updatedCourse, { new: true });
   res.json(updatedCourse);
 };
 export const updateChapter = async (req, res) => {
   const { courseId, chapterId } = req.params;
-  const { name, description, isFinished, lessons, _id, actualChapter } =
-    req.body;
-  const data = { name, description, isFinished, lessons, _id };
+  const {
+    name,
+    description,
+    isFinished,
+    lessons,
+    quiz,
+    isQuizCompleted,
+    icon,
+    _id,
+    actualChapter,
+  } = req.body;
+  const data = {
+    name,
+    description,
+    isFinished,
+    lessons,
+    quiz,
+    isQuizCompleted,
+    icon,
+    _id,
+  };
   let course = await Course.findById(courseId);
   course.chapters[actualChapter] = data;
   const updatedCourse = await Course.findByIdAndUpdate(courseId, course, {
@@ -74,7 +94,6 @@ export const updateLesson = async (req, res) => {
   res.json(updatedCourse);
 };
 export const updateQuiz = async (req, res) => {
-  console.log("Update quiz");
   const { courseId, chapterId, quizId } = req.params;
   const {
     question,
@@ -94,8 +113,15 @@ export const updateQuiz = async (req, res) => {
   res.json(updatedCourse);
 };
 export const createCourse = async (req, res) => {
-  const { name, description, isFinished, chapters } = req.body;
-  const newCourse = new Course({ name, description, isFinished, chapters });
+  const { name, description, isFinished, chapters, color, icon } = req.body;
+  const newCourse = new Course({
+    name,
+    description,
+    isFinished,
+    chapters,
+    color,
+    icon,
+  });
   try {
     await newCourse.save();
     res.status(201).json(newCourse);
@@ -105,8 +131,26 @@ export const createCourse = async (req, res) => {
 };
 export const createChapter = async (req, res) => {
   const { id } = req.params;
-  const { name, description, isFinished, lessons, _id } = req.body;
-  const data = { name, description, isFinished, lessons, _id };
+  const {
+    name,
+    description,
+    isFinished,
+    lessons,
+    icon,
+    quiz,
+    isQuizCompleted,
+    _id,
+  } = req.body;
+  const data = {
+    name,
+    description,
+    isFinished,
+    lessons,
+    icon,
+    quiz,
+    isQuizCompleted,
+    _id,
+  };
   let course = await Course.findById(id);
   course.chapters.push(data);
   const updatedCourse = await Course.findByIdAndUpdate(id, course, {

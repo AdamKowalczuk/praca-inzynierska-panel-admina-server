@@ -8,7 +8,6 @@ const secret = "test";
 
 export const signin = async (req, res) => {
   const { email, password } = req.body;
-  // console.log(req.body);
   try {
     const oldUser = await UserAdminModal.findOne({ email });
 
