@@ -31,14 +31,25 @@ export const getChapters = async (req, res) => {
 
 export const updateCourse = async (req, res) => {
   const courseId = req.params.id;
-  const { name, description, isFinished, chapters, color, icon } = req.body;
+  const {
+    name,
+    description,
+    isFinished,
+    chapters,
+    primaryColor,
+    secondaryColor,
+    thirdColor,
+    icon,
+  } = req.body;
   const updatedCourse = {
     name,
     description,
     isFinished,
     chapters,
     _id: courseId,
-    color,
+    primaryColor,
+    secondaryColor,
+    thirdColor,
     icon,
   };
   await Course.findByIdAndUpdate(courseId, updatedCourse, { new: true });
@@ -53,6 +64,7 @@ export const updateChapter = async (req, res) => {
     lessons,
     quiz,
     isQuizCompleted,
+    isExerciseCompleted,
     icon,
     _id,
     actualChapter,
@@ -64,6 +76,7 @@ export const updateChapter = async (req, res) => {
     lessons,
     quiz,
     isQuizCompleted,
+    isExerciseCompleted,
     icon,
     _id,
   };
@@ -113,13 +126,24 @@ export const updateQuiz = async (req, res) => {
   res.json(updatedCourse);
 };
 export const createCourse = async (req, res) => {
-  const { name, description, isFinished, chapters, color, icon } = req.body;
+  const {
+    name,
+    description,
+    isFinished,
+    chapters,
+    primaryColor,
+    secondaryColor,
+    thirdColor,
+    icon,
+  } = req.body;
   const newCourse = new Course({
     name,
     description,
     isFinished,
     chapters,
-    color,
+    primaryColor,
+    secondaryColor,
+    thirdColor,
     icon,
   });
   try {
@@ -139,6 +163,7 @@ export const createChapter = async (req, res) => {
     icon,
     quiz,
     isQuizCompleted,
+    isExerciseCompleted,
     _id,
   } = req.body;
   const data = {
@@ -149,6 +174,7 @@ export const createChapter = async (req, res) => {
     icon,
     quiz,
     isQuizCompleted,
+    isExerciseCompleted,
     _id,
   };
   let course = await Course.findById(id);

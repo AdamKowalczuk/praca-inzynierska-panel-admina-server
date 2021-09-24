@@ -10,7 +10,9 @@ const courseSchema = mongoose.Schema({
     default: new Date(),
   },
   icon: String,
-  color: String,
+  primaryColor: String,
+  secondaryColor: String,
+  thirdColor: String,
 });
 
 var Course = mongoose.model("Course", courseSchema);
