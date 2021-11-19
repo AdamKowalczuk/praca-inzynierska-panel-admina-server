@@ -63,6 +63,7 @@ export const updateChapter = async (req, res) => {
     isFinished,
     lessons,
     quiz,
+    exercises,
     isQuizCompleted,
     isExerciseCompleted,
     icon,
@@ -75,6 +76,7 @@ export const updateChapter = async (req, res) => {
     isFinished,
     lessons,
     quiz,
+    exercises,
     isQuizCompleted,
     isExerciseCompleted,
     icon,
@@ -125,6 +127,34 @@ export const updateQuiz = async (req, res) => {
   });
   res.json(updatedCourse);
 };
+export const updateExercise = async (req, res) => {
+  const { courseId, chapterId, exerciseId } = req.params;
+  const {
+    description,
+    options,
+    isFinished,
+    _id,
+    actualChapter,
+    actualExercise,
+  } = req.body;
+  console.log(req.params);
+  console.log(req.body);
+  const data = {
+    description,
+    options,
+    isFinished,
+    _id,
+    actualChapter,
+    actualExercise,
+  };
+  console.log(data);
+  let course = await Course.findById(courseId);
+  course.chapters[actualChapter].exercises[actualExercise] = data;
+  const updatedCourse = await Course.findByIdAndUpdate(courseId, course, {
+    new: true,
+  });
+  res.json(updatedCourse);
+};
 export const createCourse = async (req, res) => {
   const {
     name,
@@ -162,6 +192,7 @@ export const createChapter = async (req, res) => {
     lessons,
     icon,
     quiz,
+    exercises,
     isQuizCompleted,
     isExerciseCompleted,
     _id,
@@ -173,6 +204,7 @@ export const createChapter = async (req, res) => {
     lessons,
     icon,
     quiz,
+    exercises,
     isQuizCompleted,
     isExerciseCompleted,
     _id,
@@ -196,7 +228,6 @@ export const createLesson = async (req, res) => {
   res.json(updatedCourse);
 };
 export const createQuiz = async (req, res) => {
-  console.log("Create Quiz");
   const { courseId, chapterId } = req.params;
   const { question, answers, correctAnswer, isFinished, _id, actualChapter } =
     req.body;
@@ -209,14 +240,23 @@ export const createQuiz = async (req, res) => {
   });
   res.json(updatedCourse);
 };
+export const createExercise = async (req, res) => {
+  const { courseId, chapterId } = req.params;
+  const { description, options, isFinished, _id, actualChapter } = req.body;
+  const data = { description, options, isFinished, _id, actualChapter };
+  let course = await Course.findById(courseId);
+  course.chapters[actualChapter].exercises.push(data);
+  const updatedCourse = await Course.findByIdAndUpdate(courseId, course, {
+    new: true,
+  });
+  res.json(updatedCourse);
+};
 
 export const deleteCourse = async (req, res) => {
   const { id } = req.params;
   if (!mongoose.Types.ObjectId.isValid(id))
     return res.status(404).send(`No course with id: ${id}`);
-
   await Course.findByIdAndRemove(id);
-
   res.json({ message: "Course deleted successfully." });
 };
 export const deleteChapter = async (req, res) => {
@@ -232,7 +272,6 @@ export const deleteChapter = async (req, res) => {
 export const deleteLesson = async (req, res) => {
   const { courseId, chapterId, lessonId } = req.params;
   const { actualLesson } = req.body;
-
   let course = await Course.findById(courseId);
   course.chapters.map((chapter) => {
     if (chapter._id === chapterId) {
@@ -245,14 +284,26 @@ export const deleteLesson = async (req, res) => {
   res.json(updatedCourse);
 };
 export const deleteQuiz = async (req, res) => {
-  console.log("Delete Quiz");
   const { courseId, chapterId, quizId } = req.params;
   const { actualQuiz } = req.body;
-
   let course = await Course.findById(courseId);
   course.chapters.map((chapter) => {
     if (chapter._id === chapterId) {
       chapter.quiz.splice(actualQuiz, 1);
+    }
+  });
+  const updatedCourse = await Course.findByIdAndUpdate(courseId, course, {
+    new: true,
+  });
+  res.json(updatedCourse);
+};
+export const deleteExercise = async (req, res) => {
+  const { courseId, chapterId, exerciseId } = req.params;
+  const { actualExercise } = req.body;
+  let course = await Course.findById(courseId);
+  course.chapters.map((chapter) => {
+    if (chapter._id === chapterId) {
+      chapter.exercises.splice(actualExercise, 1);
     }
   });
   const updatedCourse = await Course.findByIdAndUpdate(courseId, course, {

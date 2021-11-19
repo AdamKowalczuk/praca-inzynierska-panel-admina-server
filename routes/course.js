@@ -15,6 +15,9 @@ import {
   createQuiz,
   updateQuiz,
   deleteQuiz,
+  createExercise,
+  updateExercise,
+  deleteExercise,
 } from "../controllers/courses.js";
 
 const router = express.Router();
@@ -33,6 +36,16 @@ router.patch("/:courseId/chapters/:chapterId/lessons/:lessonId", updateLesson);
 router.post("/:courseId/chapters/:chapterId/quiz", createQuiz);
 router.post("/:courseId/chapters/:chapterId/quiz/:quizId", deleteQuiz);
 router.patch("/:courseId/chapters/:chapterId/quiz/:quizId", updateQuiz);
+
+router.post("/:courseId/chapters/:chapterId/exercises", createExercise);
+router.post(
+  "/:courseId/chapters/:chapterId/exercises/:exerciseId",
+  deleteExercise
+);
+router.patch(
+  "/:courseId/chapters/:chapterId/exercises/:exerciseId",
+  updateExercise
+);
 
 router.post("/:id/chapters", createChapter);
 
