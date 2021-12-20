@@ -3,8 +3,7 @@ import jwt from "jsonwebtoken";
 
 import UserAdminModal from "../models/userAdmin.js";
 
-const secret = "test";
-//trzeba zapisać do env
+const secret = "1234";
 
 export const signin = async (req, res) => {
   const { email, password } = req.body;

@@ -134,20 +134,19 @@ export const updateExercise = async (req, res) => {
     options,
     isFinished,
     _id,
+    actualCourse,
     actualChapter,
     actualExercise,
   } = req.body;
-  console.log(req.params);
-  console.log(req.body);
   const data = {
     description,
     options,
     isFinished,
     _id,
+    actualCourse,
     actualChapter,
     actualExercise,
   };
-  console.log(data);
   let course = await Course.findById(courseId);
   course.chapters[actualChapter].exercises[actualExercise] = data;
   const updatedCourse = await Course.findByIdAndUpdate(courseId, course, {
@@ -231,7 +230,6 @@ export const createQuiz = async (req, res) => {
   const { courseId, chapterId } = req.params;
   const { question, answers, correctAnswer, isFinished, _id, actualChapter } =
     req.body;
-
   const data = { question, answers, correctAnswer, isFinished, _id };
   let course = await Course.findById(courseId);
   course.chapters[actualChapter].quiz.push(data);
